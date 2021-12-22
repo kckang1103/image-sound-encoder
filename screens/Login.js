@@ -3,11 +3,9 @@ import { useNavigation } from "@react-navigation/core";
 import {
   KeyboardAvoidingView,
   StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
+import { Button, Headline, TextInput } from 'react-native-paper';
 import { auth } from "../firebase";
 import {
   createUserWithEmailAndPassword,
@@ -50,33 +48,28 @@ const Login = () => {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <Headline style={styles.headline}>OX</Headline>
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Email"
+          label="Email"
           value={email}
-          onChangeText={(text) => setEmail(text)}
-          style={styles.input}
+          onChangeText={text => setEmail(text)}
         />
         <TextInput
           placeholder="Password"
           value={password}
           onChangeText={(text) => setPassword(text)}
-          style={styles.input}
           secureTextEntry
         />
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={handleLogin} style={styles.button}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={handleRegister}
-          style={[styles.button, styles.buttonOutline]}
-        >
-          <Text style={styles.buttonOutlineText}>Regsiter</Text>
-        </TouchableOpacity>
+        <Button onPress={handleLogin} style={styles.button}>
+          Login
+        </Button>
+        <Button onPress={handleRegister} style={styles.button}>
+          Register
+        </Button>
       </View>
     </KeyboardAvoidingView>
   );
@@ -85,6 +78,9 @@ const Login = () => {
 export default Login;
 
 const styles = StyleSheet.create({
+  headline: {
+    color: 'black'
+  },
   container: {
     flex: 1,
     justifyContent: "center",
@@ -92,6 +88,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: "80%",
+    marginTop: 60,
   },
   input: {
     backgroundColor: "white",
@@ -103,12 +100,12 @@ const styles = StyleSheet.create({
     width: "60%",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 40,
+    marginTop: 60,
   },
   button: {
-    backgroundColor: "#0782F9",
+    //backgroundColor: "#0782F9",
     width: "100%",
-    padding: 15,
+    padding: 7,
     alignItems: "center",
   },
   buttonOutline: {

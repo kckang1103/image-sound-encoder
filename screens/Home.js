@@ -1,24 +1,36 @@
 import { useNavigation } from '@react-navigation/core'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { auth } from '../firebase'
+import { StyleSheet, View } from 'react-native'
+import { BottomNavigation, Text } from 'react-native-paper';
+
+import Profile from "./Profile";
+
+const AlbumRoute = () => <Text>Album</Text>;
+
+const UploadRoute = () => <Text>Upload</Text>;
+
+const ProfileRoute = () => <Profile />;
 
 const Home = () => {
-  const navigation = useNavigation();
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: 'album', title: 'Album', icon: 'image-multiple' },
+    { key: 'upload', title: 'Upload', icon: 'upload' },
+    { key: 'profile', title: 'Profile', icon: 'account-box' },
+  ]);
 
-  const handleSignOut = () => {
-    auth.signOut().then(() => {
-      navigation.replace("Login")
-    }).catch(error => alert(error.message))
-  }
+  const renderScene = BottomNavigation.SceneMap({
+    album: AlbumRoute,
+    upload: UploadRoute,
+    profile: ProfileRoute,
+  });
 
   return (
-    <View style={styles.container}>
-      <Text>Email: {auth.currentUser?.email}</Text>
-      <TouchableOpacity onPress={handleSignOut} style={styles.button}>
-        <Text style={styles.buttonText}>Sign out</Text>
-      </TouchableOpacity>
-    </View>
+    <BottomNavigation
+      navigationState={{ index, routes }}
+      onIndexChange={setIndex}
+      renderScene={renderScene}
+    />
   )
 }
 
@@ -26,20 +38,8 @@ export default Home
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  button: {
-    backgroundColor: "#0782F9",
-    width: "60%",
-    padding: 15,
-    alignItems: "center",
-    marginTop: 40,
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "700",
-    fontSize: 16,
-  },
+  }
 })
