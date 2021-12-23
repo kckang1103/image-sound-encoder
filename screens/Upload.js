@@ -2,15 +2,15 @@ import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { Headline } from 'react-native-paper';
 
-const Home = () => {
+const Upload = () => {
   return (
     <View style={styles.container}>
-      <Headline style={styles.headline}>Home it is</Headline>
+      <Headline style={styles.headline}>Upload it is</Headline>
     </View>
   )
 }
 
-export default Home
+export default Upload
 
 const styles = StyleSheet.create({
   container: {

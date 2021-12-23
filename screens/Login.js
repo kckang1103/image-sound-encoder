@@ -21,7 +21,7 @@ const Login = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
-        navigation.replace("Home")
+        navigation.replace("Navigation")
       }
     })
 
@@ -90,12 +90,6 @@ const styles = StyleSheet.create({
     width: "80%",
     marginTop: 60,
   },
-  input: {
-    backgroundColor: "white",
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    marginTop: 5,
-  },
   buttonContainer: {
     width: "60%",
     justifyContent: "center",
@@ -107,21 +101,5 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 7,
     alignItems: "center",
-  },
-  buttonOutline: {
-    backgroundColor: "white",
-    marginTop: 5,
-    borderColor: "#0782F9",
-    borderWidth: 2,
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "700",
-    fontSize: 16,
-  },
-  buttonOutlineText: {
-    color: "#0782F9",
-    fontWeight: "700",
-    fontSize: 16,
   },
 });

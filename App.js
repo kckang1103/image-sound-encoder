@@ -2,13 +2,14 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Provider as PaperProvider } from 'react-native-paper';
 
 import LoginScreen from './screens/Login'
-import HomeScreen from './screens/Home'
-import ProfileScreen from './screens/Profile';
+import Navigation from './components/Navigation'
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
@@ -16,10 +17,9 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login" >
           <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
-          <Stack.Screen name="Home" component={ProfileScreen} />
+          <Stack.Screen name="Navigation" component={Navigation} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
   );
 }
-
