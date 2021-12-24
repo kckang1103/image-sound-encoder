@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   View,
+  Platform
 } from "react-native";
 import { Button, Headline, Subheading, TextInput } from 'react-native-paper';
 import { auth } from "../firebase";
@@ -15,6 +16,11 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const navigation = useNavigation();
 
+  let style = styles.button
+  if (Platform.OS === 'ios' || Platform.OS === "android") {
+    style = styles.backButton;
+  }
+
   const handleSendPasswordResetEmail = () => {
     console.log("clicked find password");
     sendPasswordResetEmail(auth, email).then(() => {
@@ -23,6 +29,9 @@ const ForgotPassword = () => {
     }).catch((error) => alert(error.message));
   }
 
+  const handleBack = () => {
+    navigation.replace("Login");
+  }
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <Headline style={styles.headline}>OX</Headline>
@@ -39,6 +48,9 @@ const ForgotPassword = () => {
           Submit
         </Button>
       </View>
+      <Button onPress={handleBack} style={style}>
+          Back
+      </Button>
     </KeyboardAvoidingView>
   );
 };
@@ -63,6 +75,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 60,
+  },
+  backButton: {
+    position: "absolute",
+    margin: 5,
+    left: 15,
+    top: 25
   },
   button: {
     //backgroundColor: "#0782F9",

@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: "80%",
-    marginTop: 60,
+    marginTop: 40,
   },
   buttonContainer: {
     width: "60%",
@@ -109,6 +109,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   forgotPasswordButton: {
-    marginTop: 200,
+    marginTop: 150,
   }
 });
