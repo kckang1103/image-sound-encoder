@@ -10,7 +10,6 @@ import { auth } from '../firebase'
 const storage = getStorage();
 
 const Profile = () => {
-  const [pressed, setPressed] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
 
   //const defaultProfilePicture = require('../assets/inzik.jpeg');

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import {
   KeyboardAvoidingView,
@@ -49,7 +49,7 @@ const ForgotPassword = () => {
         </Button>
       </View>
       <Button onPress={handleBack} style={style}>
-          Back
+        Back
       </Button>
     </KeyboardAvoidingView>
   );
@@ -83,7 +83,6 @@ const styles = StyleSheet.create({
     top: 25
   },
   button: {
-    //backgroundColor: "#0782F9",
     width: "100%",
     padding: 7,
     alignItems: "center",
