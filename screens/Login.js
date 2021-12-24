@@ -46,6 +46,10 @@ const Login = () => {
       .catch((error) => alert(error.message));
   };
 
+  const handleForgotPassword = () => {
+    navigation.replace("ForgotPassword");
+  }
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <Headline style={styles.headline}>OX</Headline>
@@ -62,13 +66,15 @@ const Login = () => {
           secureTextEntry
         />
       </View>
-
       <View style={styles.buttonContainer}>
         <Button onPress={handleLogin} style={styles.button}>
           Login
         </Button>
         <Button onPress={handleRegister} style={styles.button}>
           Register
+        </Button>
+        <Button onPress={handleForgotPassword} style={styles.forgotPasswordButton}>
+          Forgot password?
         </Button>
       </View>
     </KeyboardAvoidingView>
@@ -102,4 +108,7 @@ const styles = StyleSheet.create({
     padding: 7,
     alignItems: "center",
   },
+  forgotPasswordButton: {
+    marginTop: 200,
+  }
 });
