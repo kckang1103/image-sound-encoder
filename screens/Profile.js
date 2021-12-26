@@ -3,28 +3,30 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import { Avatar, Button, Headline } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
-import { getStorage, getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { updateProfile } from "firebase/auth";
 
-import { auth } from '../firebase'
-
-const storage = getStorage();
+import { auth, storage } from '../firebase'
 
 const Profile = () => {
   const [profilePicture, setProfilePicture] = useState(null);
 
-  //const defaultProfilePicture = require('../assets/inzik.jpeg');
   const defaultProfilePicture = "../assets/inzik.jpeg";
   const [currentProfilePicture, setCurrentProfilePicture] = useState(defaultProfilePicture);
 
   useEffect(() => {
-    const pictureRef = ref(storage, auth.currentUser.uid);
+    const pictureRef = ref(storage, 'users/' + auth.currentUser.uid + '/profilePicture');
     getDownloadURL(pictureRef)
       .then((url) => {
-        console.log("trying to get url from firebase storage", url);
         console.log("trying to console log current profile picture", currentProfilePicture);
         setCurrentProfilePicture(url);
+        updateProfile(auth.currentUser, { photoURL: url }).then(()=> {
+          console.log('updateing photoURL 1', url);
+        })
       })
       .catch((error) => {
+        console.log(error.message);
+        //setCurrentProfilePicture(defaultProfilePicture);
         switch (error.code) {
           case 'storage/object-not-found':
             // File doesn't exist
@@ -40,18 +42,9 @@ const Profile = () => {
             break;
         }
       });
-  }, [profilePicture])
+  }, [profilePicture, auth.currentUser])
 
-  function dataURLtoFile(dataurl, filename) {
-    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], filename, { type: mime });
-  }
-
-  const editPicture = async () => {
+  const openPickerAndUpload = async () => {
     console.log("trying to edit picture")
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -65,12 +58,14 @@ const Profile = () => {
       const blob = await response.blob();
 
       setCurrentProfilePicture(result.uri);
-      console.log("hello hello");
+      // updateProfile(auth.currentUser, { photoURL: result.uri }).then(() => {
+      //   console.log("updating photo url 2");
+      // })
 
-      const storageRef = ref(storage, auth.currentUser.uid);
+      const storageRef = ref(storage, 'users/' + auth.currentUser.uid + '/profilePicture');
 
-      uploadBytes(storageRef, blob).then((snapshot) => {
-        console.log('Upload profile image');
+      uploadBytes(storageRef, blob).then(() => {
+        console.log('Uploaded profile image successfully');
       }).then(() => {
         if (!result.cancelled) {
           setProfilePicture(result.uri);
@@ -93,7 +88,7 @@ const Profile = () => {
     <View style={styles.container}>
       <View style={styles.avatarContainer}>
         <Avatar.Image size={200} source={{ uri: currentProfilePicture }} />
-        <TouchableOpacity style={styles.edit} onPress={editPicture}>
+        <TouchableOpacity style={styles.edit} onPress={openPickerAndUpload}>
           <Avatar.Icon size={30} icon="image-edit" />
         </TouchableOpacity>
       </View>

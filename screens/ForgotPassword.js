@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   backButton: {
     position: "absolute",
     margin: 5,
-    left: 15,
+    left: 5,
     top: 25
   },
   button: {

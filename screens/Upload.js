@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { Headline } from 'react-native-paper';
 
+
 const Upload = () => {
   return (
     <View style={styles.container}>

@@ -1,6 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged, updateProfile, signInWithPopup } from "firebase/auth";
+import { getStorage, getDownloadURL, ref} from "firebase/storage";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -19,5 +21,18 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
+const storage = getStorage();
 
-export { auth }
+// onAuthStateChanged(auth, (user) => {
+//   if (user) {
+//     console.log('auth state changed');
+//     const pictureRef = ref(storage, 'users/' + user.uid + '/profilePicture');
+//     getDownloadURL(pictureRef).then((url) => {
+//       updateProfile(auth.currentUser, { photoURL: url }).then(()=> {
+//         console.log('updating photoURL when logging in', url);
+//       })
+//     })
+//   }
+// })
+
+export { auth, storage }

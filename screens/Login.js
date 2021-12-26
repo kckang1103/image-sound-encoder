@@ -5,10 +5,9 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { Button, Headline, TextInput } from 'react-native-paper';
+import { Button, Divider, Headline, TextInput } from 'react-native-paper';
 import { auth } from "../firebase";
 import {
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
@@ -29,12 +28,7 @@ const Login = () => {
   }, [])
 
   const handleRegister = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        console.log("Registered in with", user.email);
-      })
-      .catch((error) => alert(error.message));
+    navigation.replace("Register")
   };
 
   const handleLogin = () => {
@@ -65,16 +59,15 @@ const Login = () => {
           onChangeText={(text) => setPassword(text)}
           secureTextEntry
         />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={handleLogin} style={styles.button}>
+        <Button onPress={handleLogin} mode="contained" style={styles.button}>
           Login
         </Button>
-        <Button onPress={handleRegister} style={styles.button}>
-          Register
-        </Button>
-        <Button onPress={handleForgotPassword} style={styles.forgotPasswordButton}>
+        <Button onPress={handleForgotPassword}>
           Forgot password?
+        </Button>
+        <Divider style={styles.divider} />
+        <Button onPress={handleRegister} mode="outlined" style={styles.button}>
+          Create new account
         </Button>
       </View>
     </KeyboardAvoidingView>
@@ -100,15 +93,21 @@ const styles = StyleSheet.create({
     width: "60%",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 60,
+    marginTop: 40,
   },
   button: {
     //backgroundColor: "#0782F9",
+    marginVertical: 20,
     width: "100%",
     padding: 7,
     alignItems: "center",
   },
+  divider: {
+    marginVertical: 20,
+    borderColor: "black",
+    height: 1,
+  },
   forgotPasswordButton: {
-    marginTop: 150,
+    //marginTop: 15,
   }
 });
