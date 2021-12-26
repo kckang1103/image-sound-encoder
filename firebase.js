@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged, updateProfile, signInWithPopup } from "firebase/auth";
+import { getAuth, onAuthStateChanged, updateProfile } from "firebase/auth";
 import { getStorage, getDownloadURL, ref} from "firebase/storage";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -34,5 +34,7 @@ const storage = getStorage();
 //     })
 //   }
 // })
+
+console.log("auth", auth)
 
 export { auth, storage }

@@ -92,6 +92,7 @@ const Profile = () => {
           <Avatar.Icon size={30} icon="image-edit" />
         </TouchableOpacity>
       </View>
+      <Headline style={styles.headline}>Name: {auth.currentUser?.displayName}</Headline>
       <Headline style={styles.headline}>Email: {auth.currentUser?.email}</Headline>
       <Button onPress={handleSignOut}>
         Sign Out

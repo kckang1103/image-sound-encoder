@@ -4,19 +4,21 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   View,
+  Platform,
 } from "react-native";
 import { Button, Headline, Text, TextInput } from 'react-native-paper';
-import { auth } from "../firebase";
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
+  onAuthStateChanged,
   signInWithPopup,
-  signInWithRedirect,
+  signInWithCredential,
   updateProfile
 } from "firebase/auth";
+import * as Google from 'expo-google-app-auth';
 
-const googleAuthProvider = new GoogleAuthProvider();
-//googleAuthProvider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+import { auth } from "../firebase";
+import { onSignIn } from "../util";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -53,25 +55,49 @@ const Register = () => {
   };
 
   const handleGoogle = () => {
-    console.log(auth)
-    signInWithPopup(auth, googleAuthProvider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-      }).catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-      });
-      //signInWithRedirect(auth, googleAuthProvider);
+    console.log("tryint to handle google")
+    if (Platform.OS === 'web') {
+      console.log('web it is')
+      const googleAuthProvider = new GoogleAuthProvider();
+      signInWithPopup(auth, googleAuthProvider)
+        .then((result) => {
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          const token = credential.accessToken;
+          // The signed-in user info.
+          const user = result.user;
+        }).catch((error) => {
+          // Handle Errors here.
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // The email of the user's account used.
+          const email = error.email;
+          // The AuthCredential type that was used.
+          const credential = GoogleAuthProvider.credentialFromError(error);
+        });
+    } else if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      console.log('mobile it is')
+      try {
+        config = {
+          androidClientId: '374659811344-bjt71phh2eaphq3nturp6k0v2m7cn6nn.apps.googleusercontent.com',
+          iosClientId: '374659811344-ihnaibql9f6uujr6sup5uu6iu779qrff.apps.googleusercontent.com',
+          scopes: ['profile', 'email']
+        }
 
+        Google.logInAsync(config).then((result) => {
+          console.log(result)
+          onSignIn(result);
+        }).catch(error => {
+          console.log(error.message);
+        })
+      } catch (e) {
+        return { error: true };
+      }
+    }
+  }
+
+  const handleApple = () => {
+    alert("to be implemented");
   }
 
   return (
@@ -108,7 +134,7 @@ const Register = () => {
         <Button onPress={handleGoogle} icon="google" mode="outlined" style={styles.buttonAlt}>
           Continue with Google
         </Button>
-        <Button icon="apple" mode="outlined" style={styles.buttonAlt}>
+        <Button onPress={handleApple} icon="apple" mode="outlined" style={styles.buttonAlt}>
           Continue with Apple
         </Button>
       </View>
@@ -134,13 +160,13 @@ const styles = StyleSheet.create({
   button: {
     marginVertical: 20,
     width: "100%",
-    padding: 7,
+    padding: 4,
     alignItems: "center",
   },
   buttonAlt: {
     marginTop: 10,
     width: "100%",
-    padding: 7,
+    padding: 4,
     alignItems: "center"
   },
   divider: {
