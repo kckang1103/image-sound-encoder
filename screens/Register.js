@@ -10,10 +10,12 @@ import { Button, Headline, Text, TextInput } from 'react-native-paper';
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
+  signInWithCredential,
   signInWithPopup,
   updateProfile
 } from "firebase/auth";
 import * as Google from 'expo-google-app-auth';
+import * as Facebook from 'expo-facebook';
 
 import { auth } from "../firebase";
 import { onSignInGoogle } from "../util";
@@ -97,13 +99,14 @@ const Register = () => {
 
   const handleFacebook = () => {
     /* TODO: change facebook APP ID and APP Secret on Firebase Sign-in method later from Test to Live */
+    /* Mobile facebook login does not work on development environment */
 
     if (Platform.OS === 'web') {
       console.log('web it is');
 
       const facebookAuthProvider = new FacebookAuthProvider();
       facebookAuthProvider.addScope('email');
-  
+
       signInWithPopup(auth, facebookAuthProvider)
         .then((result) => {
           // The signed-in user info.
@@ -112,22 +115,22 @@ const Register = () => {
           if (result._tokenResponse.email) {
             user.email = result._tokenResponse.email
           }
-  
+
           console.log(user.email);
-  
+
           //update email as Facebook doesn't automatically add email field to auth.currentUser 
           updateProfile(auth.currentUser, { email: user.email }).then(() => {
             console.log('updating email ', user.email);
           })
-  
+
           // This gives you a Facebook Access Token. You can use it to access the Facebook API.
           const credential = FacebookAuthProvider.credentialFromResult(result);
           const accessToken = credential.accessToken;
-  
+
           fetchSignInMethodsForEmail(auth, "kckang1103@gmail.com").then((methods) => {
             console.log("trying to get methods", methods);
           })
-  
+
           // ...
         })
         .catch((error) => {
@@ -141,7 +144,35 @@ const Register = () => {
           const credential = FacebookAuthProvider.credentialFromError(error);
         });
     } else if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      /* TODO test/fix this part */
       console.log('mobile it is');
+      try {
+
+        const config = {
+          permissions: ['public_profile', 'email'],
+        };
+
+        Facebook.initializeAsync({
+          appId: '500133807984399',
+        }).then((hello) => {
+          console.log(hello)
+          Facebook.logInWithReadPermissionsAsync(config).then((result) => {
+            console.log(result)
+            if (result.type === 'success') {
+              console.log(result.token);
+              const credential = FacebookAuthProvider.credential(result.token);
+              //onSignInFacebook(result);
+              signInWithCredential(auth, credential).then(user => {
+                alert(user);
+              })
+            }
+          })
+        }
+        )
+      } catch (e) {
+        alert(e);
+        return { error: true }
+      }
     }
   }
 

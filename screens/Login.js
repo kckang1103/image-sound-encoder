@@ -100,6 +100,7 @@ const Login = () => {
 
   const handleFacebook = () => {
     /* TODO: change facebook APP ID and APP Secret on Firebase Sign-in method later from Test to Live */
+    /* Mobile facebook login does not work on development environment */
 
     if (Platform.OS === 'web') {
       console.log('web it is');
@@ -139,8 +140,8 @@ const Login = () => {
           const credential = FacebookAuthProvider.credentialFromError(error);
         });
     } else if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      /* TODO test/fix this part */
       console.log('mobile it is');
-      alert('mobile it is');
       try {
 
         const config = {
@@ -157,8 +158,7 @@ const Login = () => {
               console.log(result.token);
               const credential = FacebookAuthProvider.credential(result.token);
               //onSignInFacebook(result);
-              alert("credential", credential);
-              signInWithCredential(auth, credential).then(user =>{
+              signInWithCredential(auth, credential).then(user => {
                 alert(user);
               })
             }
@@ -169,9 +169,7 @@ const Login = () => {
         alert(e);
         return { error: true }
       }
-
     }
-
   }
 
   return (
@@ -204,7 +202,7 @@ const Login = () => {
           Continue with Google
         </Button>
         <Button onPress={handleFacebook} icon="facebook" mode="outlined" style={styles.buttonAlt}>
-          Continue with Facebookz
+          Continue with Facebook
         </Button>
         <Button onPress={handleRegister} mode="outlined" style={styles.buttonCreateNewAccount}>
           Create new account
