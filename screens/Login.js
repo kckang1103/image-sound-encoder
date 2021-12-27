@@ -8,17 +8,17 @@ import {
 } from "react-native";
 import { Button, Headline, Text, TextInput } from 'react-native-paper';
 import {
-  fetchSignInMethodsForEmail,
-  EmailAuthProvider,
   FacebookAuthProvider,
   GoogleAuthProvider,
+  signInWithCredential,
   signInWithEmailAndPassword,
   signInWithPopup,
   updateProfile,
 } from "firebase/auth";
 import * as Google from 'expo-google-app-auth';
+import * as Facebook from 'expo-facebook';
 
-import { onSignIn } from "../util";
+import { onSignInFacebook, onSignInGoogle } from "../util";
 import { auth } from "../firebase";
 
 
@@ -88,7 +88,7 @@ const Login = () => {
 
         Google.logInAsync(config).then((result) => {
           console.log(result)
-          onSignIn(result);
+          onSignInGoogle(result);
         }).catch(error => {
           console.log(error.message);
         })
@@ -106,7 +106,7 @@ const Login = () => {
 
       const facebookAuthProvider = new FacebookAuthProvider();
       facebookAuthProvider.addScope('email');
-  
+
       signInWithPopup(auth, facebookAuthProvider)
         .then((result) => {
           // The signed-in user info.
@@ -115,22 +115,17 @@ const Login = () => {
           if (result._tokenResponse.email) {
             user.email = result._tokenResponse.email
           }
-  
+
           console.log(user.email);
-  
+
           //update email as Facebook doesn't automatically add email field to auth.currentUser 
           updateProfile(auth.currentUser, { email: user.email }).then(() => {
             console.log('updating email ', user.email);
           })
-  
+
           // This gives you a Facebook Access Token. You can use it to access the Facebook API.
           const credential = FacebookAuthProvider.credentialFromResult(result);
           const accessToken = credential.accessToken;
-  
-          fetchSignInMethodsForEmail(auth, "kckang1103@gmail.com").then((methods) => {
-            console.log("trying to get methods", methods);
-          })
-  
           // ...
         })
         .catch((error) => {
@@ -145,6 +140,36 @@ const Login = () => {
         });
     } else if (Platform.OS === 'ios' || Platform.OS === 'android') {
       console.log('mobile it is');
+      alert('mobile it is');
+      try {
+
+        const config = {
+          permissions: ['public_profile', 'email'],
+        };
+
+        Facebook.initializeAsync({
+          appId: '500133807984399',
+        }).then((hello) => {
+          console.log(hello)
+          Facebook.logInWithReadPermissionsAsync(config).then((result) => {
+            console.log(result)
+            if (result.type === 'success') {
+              console.log(result.token);
+              const credential = FacebookAuthProvider.credential(result.token);
+              //onSignInFacebook(result);
+              alert("credential", credential);
+              signInWithCredential(auth, credential).then(user =>{
+                alert(user);
+              })
+            }
+          })
+        }
+        )
+      } catch (e) {
+        alert(e);
+        return { error: true }
+      }
+
     }
 
   }
@@ -179,7 +204,7 @@ const Login = () => {
           Continue with Google
         </Button>
         <Button onPress={handleFacebook} icon="facebook" mode="outlined" style={styles.buttonAlt}>
-          Continue with Facebook
+          Continue with Facebookz
         </Button>
         <Button onPress={handleRegister} mode="outlined" style={styles.buttonCreateNewAccount}>
           Create new account

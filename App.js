@@ -11,6 +11,7 @@ import Register from './screens/Register';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+
 export default function App() {
   return (
     <PaperProvider>
