@@ -26,6 +26,7 @@ const Profile = () => {
       })
       .catch((error) => {
         console.log(error.message);
+        setCurrentProfilePicture(auth.currentUser.photoURL);
         //setCurrentProfilePicture(defaultProfilePicture);
         switch (error.code) {
           case 'storage/object-not-found':

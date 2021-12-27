@@ -4,17 +4,22 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   View,
+  Platform
 } from "react-native";
 import { Button, Headline, Text, TextInput } from 'react-native-paper';
-import { auth } from "../firebase";
 import {
+  fetchSignInMethodsForEmail,
+  EmailAuthProvider,
+  FacebookAuthProvider,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
+  updateProfile,
 } from "firebase/auth";
-
 import * as Google from 'expo-google-app-auth';
+
 import { onSignIn } from "../util";
+import { auth } from "../firebase";
 
 
 const Login = () => {
@@ -51,10 +56,11 @@ const Login = () => {
   }
 
   const handleGoogle = () => {
-    console.log("trying to login through google")
+
     if (Platform.OS === 'web') {
       console.log('web it is')
       const googleAuthProvider = new GoogleAuthProvider();
+
       signInWithPopup(auth, googleAuthProvider)
         .then((result) => {
           // This gives you a Google Access Token. You can use it to access the Google API.
@@ -92,8 +98,55 @@ const Login = () => {
     }
   }
 
-  const handleApple = () => {
-    alert("to be implemented");
+  const handleFacebook = () => {
+    /* TODO: change facebook APP ID and APP Secret on Firebase Sign-in method later from Test to Live */
+
+    if (Platform.OS === 'web') {
+      console.log('web it is');
+
+      const facebookAuthProvider = new FacebookAuthProvider();
+      facebookAuthProvider.addScope('email');
+  
+      signInWithPopup(auth, facebookAuthProvider)
+        .then((result) => {
+          // The signed-in user info.
+          const user = result.user;
+
+          if (result._tokenResponse.email) {
+            user.email = result._tokenResponse.email
+          }
+  
+          console.log(user.email);
+  
+          //update email as Facebook doesn't automatically add email field to auth.currentUser 
+          updateProfile(auth.currentUser, { email: user.email }).then(() => {
+            console.log('updating email ', user.email);
+          })
+  
+          // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+          const credential = FacebookAuthProvider.credentialFromResult(result);
+          const accessToken = credential.accessToken;
+  
+          fetchSignInMethodsForEmail(auth, "kckang1103@gmail.com").then((methods) => {
+            console.log("trying to get methods", methods);
+          })
+  
+          // ...
+        })
+        .catch((error) => {
+          alert(error.message)
+          // Handle Errors here.
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // The email of the user's account used.
+          const email = error.email;
+          // The AuthCredential type that was used.
+          const credential = FacebookAuthProvider.credentialFromError(error);
+        });
+    } else if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      console.log('mobile it is');
+    }
+
   }
 
   return (
@@ -125,8 +178,8 @@ const Login = () => {
         <Button onPress={handleGoogle} icon="google" mode="outlined" style={styles.buttonAlt}>
           Continue with Google
         </Button>
-        <Button onPress={handleApple} icon="apple" mode="outlined" style={styles.buttonAlt}>
-          Continue with Apple
+        <Button onPress={handleFacebook} icon="facebook" mode="outlined" style={styles.buttonAlt}>
+          Continue with Facebook
         </Button>
         <Button onPress={handleRegister} mode="outlined" style={styles.buttonCreateNewAccount}>
           Create new account

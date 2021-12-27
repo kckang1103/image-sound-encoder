@@ -10,15 +10,14 @@ import { Button, Headline, Text, TextInput } from 'react-native-paper';
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
-  onAuthStateChanged,
   signInWithPopup,
-  signInWithCredential,
   updateProfile
 } from "firebase/auth";
 import * as Google from 'expo-google-app-auth';
 
 import { auth } from "../firebase";
 import { onSignIn } from "../util";
+
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -46,16 +45,16 @@ const Register = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
-        updateProfile(user, { displayName: username }).then(() => {
-          console.log('updating username', username);
-        })
+        // updateProfile(user, { displayName: username }).then(() => {
+        //   console.log('updating username', username);
+        // })
         console.log("Registered in with", user.email);
       })
       .catch((error) => alert(error.message));
   };
 
   const handleGoogle = () => {
-    console.log("tryint to handle google")
+    console.log("trying to register through google")
     if (Platform.OS === 'web') {
       console.log('web it is')
       const googleAuthProvider = new GoogleAuthProvider();
@@ -96,7 +95,7 @@ const Register = () => {
     }
   }
 
-  const handleApple = () => {
+  const handleFacebook = () => {
     alert("to be implemented");
   }
 
@@ -134,8 +133,8 @@ const Register = () => {
         <Button onPress={handleGoogle} icon="google" mode="outlined" style={styles.buttonAlt}>
           Continue with Google
         </Button>
-        <Button onPress={handleApple} icon="apple" mode="outlined" style={styles.buttonAlt}>
-          Continue with Apple
+        <Button onPress={handleFacebook} icon="facebook" mode="outlined" style={styles.buttonAlt}>
+          Continue with Facebook
         </Button>
       </View>
     </KeyboardAvoidingView>
